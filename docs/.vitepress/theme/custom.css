@@ -1,0 +1,105 @@
+/* 폰트 설정 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+:root {
+  /* 한글 폰트 */
+  --vp-font-family-base: 'Noto Sans KR', 'Apple SD Gothic Neo', -apple-system, sans-serif;
+  
+  /* 코드 폰트 */
+  --vp-font-family-mono: 'Fira Code', 'D2Coding', monospace;
+  
+  /* 커스텀 색상 */
+  --vp-c-brand-1: #667eea;
+  --vp-c-brand-2: #764ba2;
+  --vp-c-brand-3: #667eea;
+}
+
+/* 제목 스타일 */
+.vp-doc h1 {
+  border-bottom: 3px solid var(--vp-c-brand-1);
+  padding-bottom: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.vp-doc h2 {
+  border-left: 4px solid var(--vp-c-brand-1);
+  border-top: 0;
+  padding: 0.5rem 1rem;
+  margin-top: 2rem;
+}
+
+.vp-doc h3 {
+  color: var(--vp-c-brand-1);
+}
+
+/* 코드 블록 스타일 개선 */
+.vp-doc div[class*='language-'] {
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 인라인 코드 스타일 */
+.vp-doc :not(pre) > code {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: var(--vp-c-brand-1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* 링크 스타일 */
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.vp-doc a:hover {
+  color: var(--vp-c-brand-2);
+  text-decoration: underline;
+}
+
+/* 인용구 스타일 */
+.vp-doc blockquote {
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: rgba(102, 126, 234, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+}
+
+/* 목록 스타일 */
+.vp-doc ul li::marker {
+  color: var(--vp-c-brand-1);
+}
+
+/* 테이블 스타일 */a
+.vp-doc table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vp-doc th {
+  background: #667eea;
+  color: white;
+}
+
+/* 커스텀 컨테이너 스타일 개선 */
+.vp-doc .custom-block.info {
+  border-left-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.vp-doc .custom-block.tip {
+  border-left-color: #42b983;
+}
+
+.vp-doc .custom-block.warning {
+  border-left-color: #e7c000;
+}
+
+.vp-doc .custom-block.danger {
+  border-left-color: #cc0000;
+}
