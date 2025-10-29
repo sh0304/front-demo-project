@@ -2,11 +2,10 @@
 
 ## Computed (계산된 속성)
 - 반응형 데이터를 기반으로 새로운 값을 계산하여 반환합니다.
-- getter 함수를 인자로 받으며, 계산된 ref를 반환합니다.
+- `getter` 함수를 인자로 받으며, 계산된 `ref`를 반환합니다.
 - 값은 캐싱되며, 종속된 데이터가 변경될 때만 다시 계산됩니다.
 
-예제:
-```javascript
+```vue
 <script setup>
 import { ref, computed } from 'vue';
 
@@ -21,14 +20,15 @@ const doubleCount = computed(() => count.value * 2);
 ```
 
 Vue는 computed의 계산이 상태 값에 의존한다는 것을 알고 있으므로, 상태 값이 변경될 때 자동으로 업데이트합니다.
-::: warning
-**주의사항:** 반응형 의존성이 없는 경우에는 추적하지 않아 업데이트 되지 않습니다.
-반응형 의존성이 있는 값으로 computed를 사용해야 합니다.
+::: warning 주의사항
+반응형 의존성이 없는 경우에는 추적하지 않아 업데이트 되지 않습니다.<br>
+반응형 의존성이 있는 값으로 `computed`를 사용해야 합니다.
 :::
 
 ---
 ### Computed 등장 이유
-템플릿 내 표현식은 매우 편리하지만, 단순한 연산을 위한 것입니다. 템플릿에 너무 많은 로직을 넣으면 템플릿이 복잡해지고 유지보수가 어려워질 수 있습니다.
+템플릿 내 표현식은 매우 편리하지만, 단순한 연산을 위한 것입니다.<br>
+템플릿에 너무 많은 로직을 넣으면 템플릿이 복잡해지고 유지보수가 어려워질 수 있습니다.
 
 **문제가 되는 경우:**
 
@@ -117,7 +117,7 @@ function doubledMethod() {
 ---
 ### Computed 사용법
 
-**1. Getter는 부작용이 없어야 합니다.**
+**1. 순수 계산만 수행할 때 사용해야 합니다.**
 - 순수 계산만 수행할 때 사용하며, 다른 상태를 변경해서는 안됩니다.
 ```javascript
 const items = ref([])
@@ -156,55 +156,17 @@ numbers.value.push(4)
   - 로컬 스토리지 저장
   - 콘솔 로깅
 
-### Watch 사용법
-```vue
-<script setup>
-import { ref, watch } from 'vue'
-
-const question = ref('')
-const answer = ref('질문에는 보통 물음표가 들어 있습니다. ;-)')
-const loading = ref(false)
-
-// watch: 반응형 상태 변경 시 콜백 실행
-watch(question, async (newQuestion, oldQuestion) => {
-  if (newQuestion.includes('?')) {
-    loading.value = true
-    answer.value = '생각 중...'
-    
-    try {
-      const res = await fetch('https://yesno.wtf/api')
-      answer.value = (await res.json()).answer
-    } catch (error) {
-      answer.value = '오류! API에 접근할 수 없습니다. ' + error
-    } finally {
-      loading.value = false
-    }
-  }
-})
-</script>
-
-<template>
-  <p>
-    예/아니오로 대답할 수 있는 질문을 해보세요:
-    <input v-model="question" :disabled="loading" />
-  </p>
-  <p>{{ answer }}</p>
-</template>
-```
-
----
-
 ### Watch 인자
 ```vue
 watch(source, (newValue, oldValue) => {
    ........
 });
 ```
-- 첫 번째 인자: 감시 대상
+- **첫 번째 인자: 감시 대상**
    - ref를 사용하는 반응형 데이터
    - reactive의 getter 함수를 사용하는 반응형 객체의 속성
    - 다중 소스의 배열
-- 두 번째 인자: 콜백 함수로 감시하려는 소스가 변경될 때마다 실행
+- **두 번째 인자: 콜백 함수로 감시하려는 소스가 변경될 때마다 실행**
    - 콜백 함수의 첫 번째 인자: 변경 이후의 값
    - 콜백 함수의 두 번째 인자: 변경 이전의 값
 
@@ -257,14 +219,20 @@ watch(
   }
 )
 ```
+::: details 더보기
+**ref**: 단일 값을 감시할 때는 직접 감시하거나 getter 함수로 감지하는 방식 모두 동일하게 작동합니다.
 
----
-
+**reactive**: 객체를 감시할 때는 방식에 따라 동작이 달라집니다.
+- 직접 감시: 객체 내부까지 자동으로 깊은 감지가 적용됩니다.
+- getter 함수 사용: 객체의 참조만 감시하므로, 객체 전체가 교체될 때만 감지됩니다.
+- 객체의 특정 속성을 감지하려면 getter 함수 내에서 해당 속성에 접근해야 합니다. 이렇게 해야 의존성이 등록되어 속성 변경을 감지할 수 있습니다.
+:::
 ### Watch 옵션
 
 #### 1. 즉시 실행 (Immediate)
 
-기본적으로 watch는 지연 실행됩니다. `immediate: true`로 즉시 실행할 수 있습니다.
+기본적으로 watch는 값이 변경될 때만 콜백이 실행됩니다.<br>
+`immediate: true`으로 설정하면 컴포넌트 마운트 시에 즉시 실행할 수 있습니다.
 
 ```javascript
 const todoId = ref(1)
@@ -281,7 +249,7 @@ watch(
 ```
 
 #### 2. 1회성 감시자 (Once)
-
+`once: true`로 설정하면 단일 변경에만 실행시킬 수 있습니다.
 ```javascript
 const source = ref(0)
 
@@ -312,8 +280,7 @@ const obj = reactive({
 watch(obj, (newValue, oldValue) => {
   // 모든 중첩된 속성 변경에 대해 실행
   console.log('객체가 변경되었습니다')
-  
-  // 주의: newValue와 oldValue는 같은 객체를 가리킴!
+
 })
 
 obj.count++           // 실행됨
@@ -352,11 +319,48 @@ watch(
 
 state.user.settings.theme = 'light'  // 이제 감지됨!
 ```
+
+### Watch 사용법
+```vue
+<script setup>
+import { ref, watch } from 'vue'
+
+const question = ref('')
+const answer = ref('질문에는 보통 물음표가 들어 있습니다. ;-)')
+const loading = ref(false)
+
+// watch: 반응형 상태 변경 시 콜백 실행
+watch(question, async (newQuestion, oldQuestion) => {
+  if (newQuestion.includes('?')) {
+    loading.value = true
+    answer.value = '생각 중...'
+    
+    try {
+      const res = await fetch('https://yesno.wtf/api')
+      answer.value = (await res.json()).answer
+    } catch (error) {
+      answer.value = '오류! API에 접근할 수 없습니다. ' + error
+    } finally {
+      loading.value = false
+    }
+  }
+})
+</script>
+
+<template>
+  <p>
+    예/아니오로 대답할 수 있는 질문을 해보세요:
+    <input v-model="question" :disabled="loading" />
+  </p>
+  <p>{{ answer }}</p>
+</template>
+```
+
 ---
 
 ### watchEffect
 
-`watchEffect`는 의존성을 **자동으로 추적**합니다.
+`watchEffect`는 실행 중에 접근한 모든 반응성 종속성을 자동으로 추적하고, 즉시(마운트 시) 실행되며, 추적된 값들이 바뀔 때마다 다시 실행합니다.
 
 **Watch vs watchEffect 비교:**
 
@@ -397,7 +401,7 @@ watchEffect(async () => {
 | 상황 | 사용 | 예제 |
 |------|------|------|
 | 다른 데이터로부터 값을 계산 | Computed | 필터링, 정렬, 포맷팅 |
+| 복잡한 계산 캐싱 | Computed | 대용량 데이터 처리 |
 | 데이터 변경 시 API 호출 | Watch | 검색어 변경 시 API 요청 |
 | 데이터 변경 시 DOM 조작 | Watch | 스크롤 위치 조정 |
-| 복잡한 계산 캐싱 | Computed | 대용량 데이터 처리 |
 | 로컬 스토리지 저장 | Watch | 설정 변경 시 저장 |

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바닐라 JS vs Vue 비교</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .app-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .counter-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            background: #e8eaf6;
+            border-radius: 8px;
+            color: #333;
+            min-height: 50px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .code-section {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .code-section h3 {
+            color: #4ec9b0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        pre {
+            margin: 0;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+
+        .todo-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .todo-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .todo-section .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .todo-section .input-group input {
+            flex: 1;
+        }
+
+        .todo-section .input-group button {
+            padding: 12px 20px;
+        }
+
+        .todo-count {
+            padding: 10px;
+            background: #e8eaf6;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .todo-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .todo-item span {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+            text-align: left;
+        }
+
+        .todo-item.completed span {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .btn-delete {
+            padding: 6px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .no-todos {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .counter-display {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>바닐라 JavaScript vs Vue 3</h1>
+
+        <div class="comparison">
+            <!-- 바닐라 JS -->
+            <div class="card">
+                <h2>JavaScript</h2>
+                <div class="app-demo">
+                    <div class="counter-display" id="vanilla-counter">0</div>
+                    
+                    <div class="input-group">
+                        <label>이름을 입력하세요:</label>
+                        <input type="text" id="vanilla-input" placeholder="당신의 이름">
+                    </div>
+                    
+                    <div class="message" id="vanilla-message">안녕하세요!</div>
+                    
+                    <div class="button-group">
+                        <button class="btn-primary" id="vanilla-increment">+1 증가</button>
+                        <button class="btn-secondary" id="vanilla-decrement">-1 감소</button>
+                        <button class="btn-danger" id="vanilla-reset">초기화</button>
+                    </div>
+
+                    <div class="todo-section">
+                        <h3>📝 할 일 목록</h3>
+                        <div class="input-group">
+                            <input type="text" id="vanilla-todo-input" placeholder="할 일을 입력하세요">
+                            <button class="btn-primary" id="vanilla-add-todo">추가</button>
+                        </div>
+                        <div class="todo-count" id="vanilla-todo-count">0개 항목</div>
+                        <div class="todo-list" id="vanilla-todo-list"></div>
+                        <div class="no-todos" id="vanilla-no-todos">할 일을 추가해보세요!</div>
+                    </div>
+                </div>
+
+                <div class="code-section">
+                    <h3>📝 JavaScript 코드</h3>
+                    <pre><span class="comment">// DOM 요소 선택</span>
+<span class="keyword">const</span> counter = document.<span class="function">getElementById</span>(<span class="string">'vanilla-counter'</span>);
+<span class="keyword">const</span> input = document.<span class="function">getElementById</span>(<span class="string">'vanilla-input'</span>);
+<span class="keyword">const</span> message = document.<span class="function">getElementById</span>(<span class="string">'vanilla-message'</span>);
+
+<span class="comment">// 상태 관리</span>
+<span class="keyword">let</span> count = <span class="string">0</span>;
+
+<span class="comment">// 이벤트 리스너 등록</span>
+document.<span class="function">getElementById</span>(<span class="string">'vanilla-increment'</span>)
+  .<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    count++;
+    counter.textContent = count;
+  });
+
+input.<span class="function">addEventListener</span>(<span class="string">'input'</span>, (e) => {
+  <span class="keyword">const</span> name = e.target.value;
+  message.textContent = name 
+    ? <span class="string">`안녕하세요, ${name}님!`</span>
+    : <span class="string">'안녕하세요!'</span>;
+});
+
+<span class="comment">// UI 렌더링 - 할 일 목록</span>
+<span class="keyword">function</span> <span class="function">renderTodos</span>() {
+  <span class="comment">// 1. 카운트 수동 업데이트</span>
+  todoCount.textContent = <span class="string">`${todos.length}개 항목`</span>;
+  
+  <span class="comment">// 2. 기존 DOM 완전히 비우기</span>
+  todoList.innerHTML = <span class="string">''</span>;
+  
+  <span class="comment">// 3. 조건부 렌더링 수동 처리</span>
+  <span class="keyword">if</span> (todos.length === <span class="string">0</span>) {
+    todoList.style.display = <span class="string">'none'</span>;
+    noTodos.style.display = <span class="string">'block'</span>;
+  } <span class="keyword">else</span> {
+    <span class="comment">// 4. DOM 요소 하나하나 생성</span>
+    todos.<span class="function">forEach</span>(todo => {
+      <span class="keyword">const</span> item = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+      item.innerHTML = <span class="string">`...`</span>;
+      todoList.<span class="function">appendChild</span>(item);
+    });
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Vue -->
+            <div class="card">
+                <h2>Vue.js</h2>
+                <div id="vue-app" class="app-demo">
+                    <div class="counter-display">{{ count }}</div>
+                    
+                    <div class="input-group">
+                        <label>이름을 입력하세요:</label>
+                        <input type="text" v-model="name" placeholder="당신의 이름">
+                    </div>
+                    
+                    <div class="message">{{ greeting }}</div>
+                    
+                    <div class="button-group">
+                        <button class="btn-primary" @click="increment">+1 증가</button>
+                        <button class="btn-secondary" @click="decrement">-1 감소</button>
+                        <button class="btn-danger" @click="reset">초기화</button>
+                    </div>
+
+                    <div class="todo-section">
+                        <h3>📝 할 일 목록</h3>
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                v-model="newTodo" 
+                                @keyup.enter="addTodo"
+                                placeholder="할 일을 입력하세요">
+                            <button class="btn-primary" @click="addTodo">추가</button>
+                        </div>
+                        <div class="todo-count">{{ todos.length }}개 항목</div>
+                        <div v-if="todos.length === 0" class="no-todos">
+                            할 일을 추가해보세요!
+                        </div>
+                        <div v-else class="todo-list">
+                            <div 
+                                v-for="todo in todos" 
+                                :key="todo.id" 
+                                class="todo-item"
+                                :class="{ completed: todo.completed }">
+                                <span @click="toggleTodo(todo.id)">{{ todo.text }}</span>
+                                <button class="btn-delete" @click="deleteTodo(todo.id)">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-section">
+                    <h3>📝 Vue 3 코드</h3>
+                    <pre><span class="keyword">const</span> { createApp, ref, computed } = Vue;
+
+<span class="function">createApp</span>({
+  <span class="function">setup</span>() {
+    <span class="comment">// 반응형 상태</span>
+    <span class="keyword">const</span> count = <span class="function">ref</span>(<span class="string">0</span>);
+    <span class="keyword">const</span> name = <span class="function">ref</span>(<span class="string">''</span>);
+    <span class="keyword">const</span> todos = <span class="function">ref</span>([]);
+
+    <span class="comment">// computed 속성</span>
+    <span class="keyword">const</span> greeting = <span class="function">computed</span>(() => 
+      name.value 
+        ? <span class="string">`안녕하세요, ${name.value}님!`</span>
+        : <span class="string">'안녕하세요!'</span>
+    );
+
+    <span class="comment">// 메서드</span>
+    <span class="keyword">const</span> <span class="function">increment</span> = () => count.value++;
+    <span class="keyword">const</span> <span class="function">addTodo</span> = () => {
+      todos.value.<span class="function">push</span>({ <span class="comment">/*...*/</span> });
+    };
+
+    <span class="keyword">return</span> { count, name, greeting, todos,
+             increment, addTodo };
+  }
+}).<span class="function">mount</span>(<span class="string">'#vue-app'</span>);
+
+<span class="comment">// 템플릿에서 선언적 렌더링</span>
+<span class="comment">&lt;!-- 결과 카운트 - 자동 업데이트 --&gt;</span>
+<span class="comment">&lt;div class="todo-count"&gt;</span>
+<span class="comment">  {{ todos.length }}개 항목</span>
+<span class="comment">&lt;/div&gt;</span>
+
+<span class="comment">&lt;!-- 조건부 렌더링 - v-if --&gt;</span>
+<class= class="comment">&lt;div v-if="todos.length === 0" class="no-todos"&gt;</span>
+<span class="comment">  할 일을 추가해보세요!</span>
+<span class="comment">&lt;/div&gt;</span>
+
+<span class="comment">&lt;!-- 리스트 렌더링 - v-for --&gt;</span>
+<span class="comment">&lt;div v-else class="todo-list"&gt;</span>
+<span class="comment">  &lt;div v-for="todo in todos" </span>
+<span class="comment">       :key="todo.id"</span>
+<span class="comment">       class="todo-item"&gt;</span>
+<span class="comment">    &lt;span&gt;{{ todo.text }}&lt;/span&gt;</span>
+<span class="comment">    &lt;button @click="deleteTodo(todo.id)"&gt;</span>
+<span class="comment">      삭제</span>
+<span class="comment">    &lt;/button&gt;</span>
+<span class="comment">  &lt;/div&gt;</span>
+<span class="comment">&lt;/div&gt;</span></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 바닐라 JavaScript ==========
+        const vanillaCounter = document.getElementById('vanilla-counter');
+        const vanillaInput = document.getElementById('vanilla-input');
+        const vanillaMessage = document.getElementById('vanilla-message');
+        const vanillaIncrementBtn = document.getElementById('vanilla-increment');
+        const vanillaDecrementBtn = document.getElementById('vanilla-decrement');
+        const vanillaResetBtn = document.getElementById('vanilla-reset');
+
+        let count = 0;
+
+        vanillaIncrementBtn.addEventListener('click', () => {
+            count++;
+            vanillaCounter.textContent = count;
+        });
+
+        vanillaDecrementBtn.addEventListener('click', () => {
+            count--;
+            vanillaCounter.textContent = count;
+        });
+
+        vanillaResetBtn.addEventListener('click', () => {
+            count = 0;
+            vanillaCounter.textContent = count;
+        });
+
+        vanillaInput.addEventListener('input', (e) => {
+            const name = e.target.value;
+            vanillaMessage.textContent = name 
+                ? `안녕하세요, ${name}님!` 
+                : '안녕하세요!';
+        });
+
+        // ========== 바닐라 JS - 할 일 목록 (UI 렌더링) ==========
+        const vanillaTodoInput = document.getElementById('vanilla-todo-input');
+        const vanillaAddTodoBtn = document.getElementById('vanilla-add-todo');
+        const vanillaTodoList = document.getElementById('vanilla-todo-list');
+        const vanillaTodoCount = document.getElementById('vanilla-todo-count');
+        const vanillaNoTodos = document.getElementById('vanilla-no-todos');
+
+        let todos = [];
+        let todoIdCounter = 1;
+
+        // 할 일 렌더링 함수
+        function renderTodos() {
+            // 1. 카운트 수동 업데이트
+            vanillaTodoCount.textContent = `${todos.length}개 항목`;
+
+            // 2. 기존 DOM 완전히 비우기
+            vanillaTodoList.innerHTML = '';
+
+            // 3. 조건부 렌더링 수동 처리
+            if (todos.length === 0) {
+                vanillaTodoList.style.display = 'none';
+                vanillaNoTodos.style.display = 'block';
+            } else {
+                vanillaTodoList.style.display = 'flex';
+                vanillaNoTodos.style.display = 'none';
+
+                // 4. DOM 요소 하나하나 생성 및 추가
+                todos.forEach(todo => {
+                    const todoItem = document.createElement('div');
+                    todoItem.className = 'todo-item';
+                    if (todo.completed) {
+                        todoItem.classList.add('completed');
+                    }
+
+                    const span = document.createElement('span');
+                    span.textContent = todo.text;
+                    span.addEventListener('click', () => {
+                        todo.completed = !todo.completed;
+                        renderTodos();
+                    });
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn-delete';
+                    deleteBtn.textContent = '삭제';
+                    deleteBtn.addEventListener('click', () => {
+                        todos = todos.filter(t => t.id !== todo.id);
+                        renderTodos();
+                    });
+
+                    todoItem.appendChild(span);
+                    todoItem.appendChild(deleteBtn);
+                    vanillaTodoList.appendChild(todoItem);
+                });
+            }
+        }
+
+        // 할 일 추가
+        function addVanillaTodo() {
+            const text = vanillaTodoInput.value.trim();
+            if (text) {
+                todos.push({
+                    id: todoIdCounter++,
+                    text: text,
+                    completed: false
+                });
+                vanillaTodoInput.value = '';
+                renderTodos();
+            }
+        }
+
+        vanillaAddTodoBtn.addEventListener('click', addVanillaTodo);
+        vanillaTodoInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                addVanillaTodo();
+            }
+        });
+
+        // 초기 렌더링
+        renderTodos();
+
+        // ========== Vue 3 (Composition API) ==========
+        const { createApp, ref, computed } = Vue;
+
+        createApp({
+            setup() {
+                // 반응형 상태
+                const count = ref(0);
+                const name = ref('');
+
+                // computed 속성
+                const greeting = computed(() => 
+                    name.value 
+                        ? `안녕하세요, ${name.value}님!` 
+                        : '안녕하세요!'
+                );
+
+                // 메서드
+                const increment = () => count.value++;
+                const decrement = () => count.value--;
+                const reset = () => count.value = 0;
+
+                // 할 일 목록 상태
+                const todos = ref([]);
+                const newTodo = ref('');
+                let todoIdCounter = 1;
+
+                // 할 일 목록 메서드
+                const addTodo = () => {
+                    if (newTodo.value.trim()) {
+                        todos.value.push({
+                            id: todoIdCounter++,
+                            text: newTodo.value,
+                            completed: false
+                        });
+                        newTodo.value = '';
+                    }
+                };
+
+                const toggleTodo = (id) => {
+                    const todo = todos.value.find(t => t.id === id);
+                    if (todo) {
+                        todo.completed = !todo.completed;
+                    }
+                };
+
+                const deleteTodo = (id) => {
+                    todos.value = todos.value.filter(t => t.id !== id);
+                };
+
+                return {
+                    count,
+                    name,
+                    greeting,
+                    increment,
+                    decrement,
+                    reset,
+                    todos,
+                    newTodo,
+                    addTodo,
+                    toggleTodo,
+                    deleteTodo
+                };
+            }
+        }).mount('#vue-app');
+    </script>
+</body>
+</html>

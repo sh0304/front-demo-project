@@ -4,9 +4,11 @@ Vue는 HTML 기반의 템플릿 문법을 사용하여 DOM을 데이터에 선�
 
 템플릿을 최적화된 JavaScript 코드로 컴파일하며, 반응성 시스템과 결합하고 상태 변경 시 최소한의 DOM 조작만 수행합니다.
 
+---
+
 ## 기본 데이터 바인딩
 
-### 텍스트 보간
+### 텍스트 보간 (Text Interpolation)
 
 이중 중괄호를 사용하여 데이터를 텍스트로 표시하며, 데이터가 변경되면 자동으로 업데이트됩니다.
 
@@ -26,7 +28,7 @@ const count = ref(0)
 
 ### JavaScript 표현식 및 함수 사용
 
-템플릿에서 JavaScript 표현식과 함수을 호출하여 사용할 수 있습니다.
+템플릿에서 JavaScript 표현식과 함수를 호출하여 사용할 수 있습니다.
 
 ```vue
 <script setup>
@@ -53,43 +55,55 @@ const date = ref('2024-01-15')
   <!-- 템플릿 리터럴 -->
   <div :id="`list-${id}`"></div>  <!-- id="list-123" -->
 
+  <!-- 함수 호출 -->
   <time :title="toTitleDate(date)" :datetime="date">
     {{ formatDate(date) }}
   </time>
 </template>
 ```
 
-## 디렉티브
+---
+
+## 디렉티브 (Directives)
 
 디렉티브는 `v-` 접두사가 붙은 특수 속성입니다.
 
 ### 디렉티브 구조
+
 ![directive](images/template-directive.png)
 
-#### 인자
-일부 디렉티브는 콜론으로 표시되는 인자를 받을 수 있습니다.
-```js
+#### 1. 인자
+
+일부 디렉티브는 콜론(`:`)으로 표시되는 인자를 받을 수 있습니다.
+
+```vue
 <a v-bind:href="url"> ... </a>
 ```
 
-#### 동적 인자
-디렉티브 인자에 대괄호로 감싼 JavaScript 표현식을 사용할 수도 있습니다.
-```js
+#### 2. 동적 인자
+
+디렉티브 인자에 대괄호 `[]`로 감싼 JavaScript 표현식을 사용할 수도 있습니다.
+
+```vue
 <a v-bind:[attributeName]="url"> ... </a>
 
 <!-- 축약 문법 -->
 <a :[attributeName]="url"> ... </a>
 ```
 
-#### 수식어​
-수식어는 점(.)으로 표시되는 특수 접미사로, 디렉티브가 특별한 방식으로 바인딩되어야 함을 나타냅니다.
+#### 3. 수식어
+
+수식어는 점(`.`)으로 표시되는 특수 접미사로, 디렉티브가 특별한 방식으로 바인딩되어야 함을 나타냅니다.
 
 예를 들어, `.prevent` 수식어는 `v-on` 디렉티브에 트리거된 이벤트에서 `event.preventDefault()`를 호출하라고 지시합니다.
-```js
+
+```vue
 <form @submit.prevent="onSubmit">...</form>
 ```
 
-## `v-bind` (속성 바인딩)
+---
+
+## `v-bind` - 속성 바인딩
 
 ### 기본 사용법
 
@@ -115,9 +129,13 @@ const isDisabled = ref(true)
 </template>
 ```
 
-## `v-if` (조건부 렌더링)
+---
 
-조건에 따라 요소를 **DOM에서 추가/제거** 할 수 있습니다.
+## `v-if` - 조건부 렌더링
+
+조건에 따라 요소를 **DOM에서 추가/제거**할 수 있습니다.
+
+### 사용 가능한 디렉티브
 - `v-if`
 - `v-else-if`
 - `v-else`
@@ -139,7 +157,9 @@ const score = ref(85)
 </template>
 ```
 
-## `v-show` (조건부 표시)
+---
+
+## `v-show` - 조건부 표시
 
 조건에 따라 요소를 **CSS display로 숨김/표시**할 수 있습니다.
 
@@ -152,14 +172,16 @@ const isVisible = ref(false)
 
 <template>
   <p v-show="isVisible">이 텍스트는 숨겨져 있습니다</p>
-  <!-- CSS: display: none -->
+  <!-- 렌더링 결과: <p style="display: none;">이 텍스트는 숨겨져 있습니다</p> -->
 </template>
 ```
 
-### v-if vs v-show 비교
+---
 
-| 특징 | v-if | v-show |
-|------|------|--------|
+### `v-if` vs `v-show` 비교
+
+| 특징 | `v-if` | `v-show` |
+|------|--------|----------|
 | **DOM 렌더링** | 조건이 false면 DOM에서 제거 | 항상 DOM에 존재 |
 | **CSS 처리** | - | `display: none` 사용 |
 | **초기 렌더링 비용** | 낮음 (false면 렌더링 안함) | 높음 (항상 렌더링) |
@@ -186,9 +208,13 @@ const show = ref(false)
 </template>
 ```
 
-## `v-for` (리스트 렌더링)
+---
+
+## `v-for` - 리스트 렌더링
 
 배열이나 객체를 반복하여 렌더링할 수 있습니다.
+
+### 기본 사용법
 
 ```vue
 <script setup>
@@ -233,7 +259,9 @@ const items = ref([
 </template>
 ```
 
-## `v-on` (이벤트 처리)
+---
+
+## `v-on` - 이벤트 처리
 
 DOM 이벤트를 감지하고 JavaScript를 실행할 수 있습니다.
 
@@ -261,6 +289,8 @@ function increment() {
 </template>
 ```
 
+---
+
 ### 이벤트 객체 접근
 
 ```vue
@@ -284,7 +314,9 @@ function handleWithParam(message, event) {
 </template>
 ```
 
-## `v-model` (양방향 바인딩)
+---
+
+## `v-model` - 양방향 바인딩
 
 폼 입력 요소와 데이터를 양방향으로 바인딩할 수 있습니다.
 
@@ -307,7 +339,7 @@ const message = ref('안녕하세요')
 </template>
 ```
 
-### v-model의 동작 원리
+### `v-model`의 동작 원리
 
 `v-model`은 `v-bind`와 `v-on`의 조합입니다.
 
@@ -324,13 +356,17 @@ const message = ref('안녕하세요')
 </template>
 ```
 
+---
+
 ## Vue 렌더링 메커니즘
+
 템플릿이 화면에 그려지는 과정을 확인해보겠습니다.
 
 ### 1단계: 템플릿 → JavaScript 함수
 
-Vue 템플릿은 실행 시 JavaScript 함수로 변환됩니다.
-- vue 템플릿 코드
+Vue 템플릿은 실행 시, JavaScript 함수로 변환됩니다.
+
+#### Vue 템플릿 코드
 
 ```vue
 <template>
@@ -341,7 +377,7 @@ Vue 템플릿은 실행 시 JavaScript 함수로 변환됩니다.
 </template>
 ```
 
-- 컴파일 후 생성되는 JavaScript 코드
+#### 컴파일 후 생성되는 JavaScript 코드
 
 ```js
 function render() {
@@ -352,11 +388,13 @@ function render() {
 }
 ```
 
-이 render 함수가 실행될 때마다 JavaScript 객체를 반환되는데, 이 객체를 **가상 DOM**(Virtual DOM)이라고 합니다.
+이 render 함수가 실행될 때마다 JavaScript 객체를 반환하는데,<br>
+이 객체를 **가상 DOM**(Virtual DOM)이라고 합니다.
 
 ### 2단계: JavaScript 객체 (가상 DOM)
 
 렌더 함수가 반환하는 JavaScript 객체는 다음과 같은 구조로 이루어집니다.
+
 이 객체는 생성과 비교가 빠르며, 실제 DOM 조작 없이 메모리에서만 처리합니다.
 
 ```js
@@ -396,7 +434,7 @@ div.appendChild(h1)
 div.appendChild(p)
 ```
 
-최종 결과:
+#### 최종 결과
 
 ```html
 <div id="app">
@@ -427,39 +465,44 @@ function increment() {
 </template>
 ```
 
-**count가 변경될 때 발생 과정**
+#### `count`가 변경될 때 발생하는 과정
 
-1. **렌더 함수 재실행**
-   ```js
-   // 새로운 가상 DOM 생성
-   {
-     type: "div",
-     children: [
-       { type: "h1", children: "카운터" },
-       { type: "p", children: "1" },  // 0 → 1 변경
-       { type: "button", children: "증가" }
-     ]
-   }
-   ```
+**1. 렌더 함수 재실행**
 
-2. **이전 가상 DOM과 비교**
-   ```js
-   // 이전
-   { type: "p", children: "0" }
-   
-   // 새로운
-   { type: "p", children: "1" }
-   
-   // 차이점: children이 "0"에서 "1"로 변경됨
-   ```
+```js
+// 새로운 가상 DOM 생성
+{
+  type: "div",
+  children: [
+    { type: "h1", children: "카운터" },
+    { type: "p", children: "1" },  // 0 → 1 변경
+    { type: "button", children: "증가" }
+  ]
+}
+```
 
-3. **필요한 부분만 실제 DOM 업데이트**
-   ```js
-   // Vue가 실행하는 코드
-   pElement.textContent = "1"
-   ```
+**2. 이전 가상 DOM과 비교**
+
+```js
+// 이전
+{ type: "p", children: "0" }
+
+// 새로운
+{ type: "p", children: "1" }
+
+// 차이점: children이 "0"에서 "1"로 변경됨
+```
+
+**3. 필요한 부분만 실제 DOM 업데이트**
+
+```js
+// Vue가 실행하는 코드
+pElement.textContent = "1"
+```
 
 전체 DOM을 다시 그리지 않고, **변경된 텍스트만 교체**합니다.
+
+---
 
 ## Vue의 최적화 기법
 
@@ -478,7 +521,7 @@ function increment() {
 </template>
 ```
 
-**컴파일 시 최적화:**
+#### 컴파일 시 최적화
 
 ```js
 // 정적 부분은 상수로 추출
@@ -497,7 +540,7 @@ function render() {
 }
 ```
 
-`_hoisted_1`과 `_hoisted_2`는 한 번만 생성되고 계속 재사용됩니다.
+`_hoisted_1`과 `_hoisted_2`는 **한 번만 생성**되고 계속 재사용됩니다.
 
 ### 2. 동적 부분 표시 (Patch Flags)
 
@@ -509,7 +552,7 @@ Vue는 컴파일 시 어떤 부분이 동적인지 표시합니다.
 </template>
 ```
 
-**↓ 컴파일 결과**
+#### 컴파일 결과
 
 ```js
 function render() {
@@ -548,13 +591,18 @@ const dynamicNodes = [
 ]
 ```
 
-업데이트 시:
+#### 업데이트 시
+
 - 전체 DOM 트리를 순회하지 않음
 - `dynamicNodes` 배열의 요소만 확인
+
+---
 
 ## 실제 컴파일 결과 확인하기
 
 [Vue 공식 템플릿 탐색기](https://play.vuejs.org/)에서 직접 확인할 수 있습니다.
+
+### 예제 코드
 
 ```vue
 <template>
@@ -565,10 +613,15 @@ const dynamicNodes = [
 </template>
 ```
 
-- 실제 컴파일 결과
+### 실제 컴파일 결과
 
 ```js
-import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
+import { 
+  createElementVNode as _createElementVNode, 
+  toDisplayString as _toDisplayString, 
+  openBlock as _openBlock, 
+  createElementBlock as _createElementBlock 
+} from "vue"
 
 export function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (_openBlock(), _createElementBlock("div", null, [

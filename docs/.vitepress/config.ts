@@ -16,14 +16,14 @@ export default defineConfig({
       {
         items: [
           { text: '소개', link: '/' },
-          { text: '반응형 상태', link: '/reactive-state' },
+          { text: 'ref와 reactive', link: '/reactive-system' },
           { text: 'computed와 watch', link: '/computed-watch' },
           { text: '템플릿 문법', link: '/template-syntax' },
           { text: 'Vanilla JS와 비교', link: '/vue-example' },
           { text: '생명주기', link: '/life-cycle' },
           { text: 'props와 emit', link: '/props-emit' },
           { text: '상태 관리', link: '/state-management' },
-          { text: '마무리', link: '/post-end' },
+          { text: '마무리', link: '/overview' },
         ]
       }
     ],
